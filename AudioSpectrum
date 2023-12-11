@@ -6,23 +6,23 @@ export class AudioSpectrum {
     static javascriptNode;
 
     static micSpectrum(stream, meter) {
-        AudioProcessor.audioContext = new AudioContext();
-        AudioProcessor.analyser = AudioProcessor.audioContext.createAnalyser();
+        AudioSpectrum.audioContext = new AudioContext();
+        AudioSpectrum.analyser = AudioSpectrum.audioContext.createAnalyser();
 
-        AudioProcessor.microphone = AudioProcessor.audioContext.createMediaStreamSource(stream);
-        AudioProcessor.javascriptNode = AudioProcessor.audioContext.createScriptProcessor(2048, 1, 1);
+        AudioSpectrum.microphone = AudioSpectrum.audioContext.createMediaStreamSource(stream);
+        AudioSpectrum.javascriptNode = AudioSpectrum.audioContext.createScriptProcessor(2048, 1, 1);
 
-        AudioProcessor.analyser.smoothingTimeConstant = 0.8;
-        AudioProcessor.analyser.fftSize = 1024;
+        AudioSpectrum.analyser.smoothingTimeConstant = 0.8;
+        AudioSpectrum.analyser.fftSize = 1024;
 
-        AudioProcessor.microphone.connect(AudioProcessor.analyser);
-        AudioProcessor.analyser.connect(AudioProcessor.javascriptNode);
-        AudioProcessor.javascriptNode.connect(AudioProcessor.audioContext.destination);
+        AudioSpectrum.microphone.connect(AudioSpectrum.analyser);
+        AudioSpectrum.analyser.connect(AudioSpectrum.javascriptNode);
+        AudioSpectrum.javascriptNode.connect(AudioSpectrum.audioContext.destination);
 
-        AudioProcessor.javascriptNode.onaudioprocess = function () {
+        AudioSpectrum.javascriptNode.onaudioprocess = function () {
             // console.log("funciona");
-            const array = new Uint8Array(AudioProcessor.analyser.frequencyBinCount);
-            AudioProcessor.analyser.getByteFrequencyData(array);
+            const array = new Uint8Array(AudioSpectrum.analyser.frequencyBinCount);
+            AudioSpectrum.analyser.getByteFrequencyData(array);
             let values = 0;
 
             const length = array.length;
@@ -35,23 +35,23 @@ export class AudioSpectrum {
         }
     }
     static micSpectrumForCanvas(stream, canvas) {
-        AudioProcessor.audioContext = new AudioContext();
-        AudioProcessor.analyser = AudioProcessor.audioContext.createAnalyser();
+        AudioSpectrum.audioContext = new AudioContext();
+        AudioSpectrum.analyser = AudioSpectrum.audioContext.createAnalyser();
 
-        AudioProcessor.microphone = AudioProcessor.audioContext.createMediaStreamSource(stream);
-        AudioProcessor.javascriptNode = AudioProcessor.audioContext.createScriptProcessor(2048, 1, 1);
+        AudioSpectrum.microphone = AudioSpectrum.audioContext.createMediaStreamSource(stream);
+        AudioSpectrum.javascriptNode = AudioSpectrum.audioContext.createScriptProcessor(2048, 1, 1);
 
-        AudioProcessor.analyser.smoothingTimeConstant = 0.8;
-        AudioProcessor.analyser.fftSize = 1024;
+        AudioSpectrum.analyser.smoothingTimeConstant = 0.8;
+        AudioSpectrum.analyser.fftSize = 1024;
 
-        AudioProcessor.microphone.connect(AudioProcessor.analyser);
-        AudioProcessor.analyser.connect(AudioProcessor.javascriptNode);
-        AudioProcessor.javascriptNode.connect(AudioProcessor.audioContext.destination);
+        AudioSpectrum.microphone.connect(AudioSpectrum.analyser);
+        AudioSpectrum.analyser.connect(AudioSpectrum.javascriptNode);
+        AudioSpectrum.javascriptNode.connect(AudioSpectrum.audioContext.destination);
 
-        AudioProcessor.javascriptNode.onaudioprocess = function () {
+        AudioSpectrum.javascriptNode.onaudioprocess = function () {
             // console.log("funciona");
-            const array = new Uint8Array(AudioProcessor.analyser.frequencyBinCount);
-            AudioProcessor.analyser.getByteFrequencyData(array);
+            const array = new Uint8Array(AudioSpectrum.analyser.frequencyBinCount);
+            AudioSpectrum.analyser.getByteFrequencyData(array);
             let values = 0;
 
             const length = array.length;
