@@ -1,0 +1,79 @@
+export class AudioSpectrum {
+
+    static audioContext;
+    static analyser;
+    static microphone;
+    static javascriptNode;
+
+    static micSpectrum(stream, meter) {
+        AudioProcessor.audioContext = new AudioContext();
+        AudioProcessor.analyser = AudioProcessor.audioContext.createAnalyser();
+
+        AudioProcessor.microphone = AudioProcessor.audioContext.createMediaStreamSource(stream);
+        AudioProcessor.javascriptNode = AudioProcessor.audioContext.createScriptProcessor(2048, 1, 1);
+
+        AudioProcessor.analyser.smoothingTimeConstant = 0.8;
+        AudioProcessor.analyser.fftSize = 1024;
+
+        AudioProcessor.microphone.connect(AudioProcessor.analyser);
+        AudioProcessor.analyser.connect(AudioProcessor.javascriptNode);
+        AudioProcessor.javascriptNode.connect(AudioProcessor.audioContext.destination);
+
+        AudioProcessor.javascriptNode.onaudioprocess = function () {
+            // console.log("funciona");
+            const array = new Uint8Array(AudioProcessor.analyser.frequencyBinCount);
+            AudioProcessor.analyser.getByteFrequencyData(array);
+            let values = 0;
+
+            const length = array.length;
+            for (let i = 0; i < length; i++) {
+                values += array[i];
+            }
+
+            const average = values / length;
+            meter.value = Math.round(average + 2);
+        }
+    }
+    static micSpectrumForCanvas(stream, canvas) {
+        AudioProcessor.audioContext = new AudioContext();
+        AudioProcessor.analyser = AudioProcessor.audioContext.createAnalyser();
+
+        AudioProcessor.microphone = AudioProcessor.audioContext.createMediaStreamSource(stream);
+        AudioProcessor.javascriptNode = AudioProcessor.audioContext.createScriptProcessor(2048, 1, 1);
+
+        AudioProcessor.analyser.smoothingTimeConstant = 0.8;
+        AudioProcessor.analyser.fftSize = 1024;
+
+        AudioProcessor.microphone.connect(AudioProcessor.analyser);
+        AudioProcessor.analyser.connect(AudioProcessor.javascriptNode);
+        AudioProcessor.javascriptNode.connect(AudioProcessor.audioContext.destination);
+
+        AudioProcessor.javascriptNode.onaudioprocess = function () {
+            // console.log("funciona");
+            const array = new Uint8Array(AudioProcessor.analyser.frequencyBinCount);
+            AudioProcessor.analyser.getByteFrequencyData(array);
+            let values = 0;
+
+            const length = array.length;
+            for (let i = 0; i < length; i++) {
+                values += array[i];
+            }
+
+            const average = values / length;
+            const ancho = Math.round(average + 2) > 50 ? 52 : Math.round(average + 40);
+            const blur = Math.round(average + 40) > 40 ? 40 : Math.round(average + 40);
+
+            canvas.clearRect(0, 0, 200, 200);
+            canvas.lineWidth = blur > 25 ? 25 : blur;
+            canvas.globalAlpha = 0.75;
+            canvas.beginPath();
+            canvas.shadowBlur = blur;
+            canvas.shadowOffsetX = 4;
+            canvas.shadowOffsetY = 4;
+            canvas.shadowColor = "#005e9d";
+            canvas.strokeStyle = "#005e9d67";
+            canvas.arc(100, 100, ancho, 0, 2 * Math.PI);
+            canvas.stroke();
+        }
+    }
+}
